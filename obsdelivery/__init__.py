@@ -15,21 +15,35 @@ from .delivery import DeliveryService
 from .delivery_algo import ScaleAttempt, Selection, round_half_even, select_representation
 from .errors import (
     BatchRejected,
+    CarouselConfigConflict,
+    CarouselConfigNotFound,
     DeliveryIdConflict,
     DeliveryNotFound,
     DeliveryRejected,
     IntegrityError,
+    PhysicalTraceConflict,
     ProductConflict,
     ProductNotFound,
+    ReconciliationConflict,
+    ReconciliationNotFound,
     ReferenceConflict,
     ReferenceNotFound,
     ReportConflict,
     ReportNotFound,
+    StationLogConflict,
+    StationLogNotFound,
+    ThermalCatalogConflict,
+    ThermalCatalogNotFound,
+    ThermalProductConflict,
+    ThermalProductNotFound,
+    ThermalSegmentRejected,
     ValidationError,
 )
+from .physical import PhysicalService
 from .semantics import decode, interpret, judge, parse_bits
 from .service import SemanticsService
 from .storage import Store
+from .thermal import ThermalService
 
 __all__ = [
     "ReaderContract",
@@ -39,16 +53,28 @@ __all__ = [
     "round_half_even",
     "select_representation",
     "BatchRejected",
+    "CarouselConfigConflict",
+    "CarouselConfigNotFound",
     "DeliveryIdConflict",
     "DeliveryNotFound",
     "DeliveryRejected",
     "IntegrityError",
+    "PhysicalTraceConflict",
     "ProductConflict",
     "ProductNotFound",
+    "ReconciliationConflict",
+    "ReconciliationNotFound",
     "ReferenceConflict",
     "ReferenceNotFound",
     "ReportConflict",
     "ReportNotFound",
+    "StationLogConflict",
+    "StationLogNotFound",
+    "ThermalCatalogConflict",
+    "ThermalCatalogNotFound",
+    "ThermalProductConflict",
+    "ThermalProductNotFound",
+    "ThermalSegmentRejected",
     "ValidationError",
     "decode",
     "interpret",
@@ -56,4 +82,6 @@ __all__ = [
     "parse_bits",
     "SemanticsService",
     "Store",
+    "ThermalService",
+    "PhysicalService",
 ]

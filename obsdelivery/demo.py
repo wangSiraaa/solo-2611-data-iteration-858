@@ -253,6 +253,9 @@ def run(input_path: Path, db_path: str | None = None) -> dict:
         }
     )
 
+    # Extended entry point: thermal closure + physical traceability.  Runs in a
+    # separate in-memory store so it cannot perturb the decimal delivery demo,
+    # but is reachable from the same command via ``--thermal``.
     store.close()
     return log
 
@@ -292,12 +295,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("input", nargs="?", default=str(DEFAULT_INPUT))
     parser.add_argument("--db", help="SQLite path (default: in-memory)")
     parser.add_argument("--json", action="store_true", help="emit JSON instead of text")
+    parser.add_argument(
+        "--thermal",
+        action="store_true",
+        help="also run the thermal-closure / physical-trace demo",
+    )
     args = parser.parse_args(argv)
     result = run(Path(args.input), args.db)
+    if args.thermal:
+        from .thermal_demo import run as run_thermal
+
+        result["thermal_trace"] = run_thermal(None)
     if args.json:
         print(json.dumps(result, indent=2, ensure_ascii=False, default=str))
         return 0
     _print_text(result)
+    if args.thermal:
+        from .thermal_demo import _print_text as _print_thermal
+
+        print("\n================ thermal closure / physical trace ================")
+        _print_thermal(result["thermal_trace"])
     return 0
 
 

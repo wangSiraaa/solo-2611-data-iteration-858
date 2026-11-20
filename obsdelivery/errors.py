@@ -72,3 +72,93 @@ class DeliveryRejected(Exception):
 
 class IntegrityError(Exception):
     """Stored immutable content failed independent read-back verification."""
+
+
+# ---------------------------------------------------------------------------
+# thermal cycle closure
+# ---------------------------------------------------------------------------
+
+class ThermalCatalogConflict(Exception):
+    """A thermal catalog version already exists with different content."""
+
+
+class ThermalCatalogNotFound(KeyError):
+    pass
+
+
+class ThermalProductConflict(Exception):
+    """A thermal product id already exists with different immutable content."""
+
+
+class ThermalProductNotFound(KeyError):
+    pass
+
+
+class ThermalSegmentRejected(Exception):
+    """A thermal product build was rejected because a reading is non-finite.
+
+    Nothing is published and any previously frozen product under the same id
+    remains untouched.  ``attempt_id`` identifies the audit entry.
+    """
+
+    def __init__(
+        self,
+        product_id: str,
+        reasons: Iterable[Mapping[str, Any]],
+        attempt_id: int | None = None,
+    ):
+        self.product_id = product_id
+        self.reasons = list(reasons)
+        self.attempt_id = attempt_id
+        super().__init__(
+            f"thermal product {product_id!r} rejected: " + repr(self.reasons)
+        )
+
+
+# ---------------------------------------------------------------------------
+# physical sample carousel / traceability
+# ---------------------------------------------------------------------------
+
+class StationLogConflict(Exception):
+    """A station log version already exists with different content."""
+
+
+class StationLogNotFound(KeyError):
+    pass
+
+
+class CarouselConfigConflict(Exception):
+    """A carousel configuration id already exists with different content."""
+
+
+class CarouselConfigNotFound(KeyError):
+    pass
+
+
+class ReconciliationConflict(Exception):
+    """A reconciliation id exists for a different request."""
+
+
+class ReconciliationNotFound(KeyError):
+    pass
+
+
+class PhysicalTraceConflict(Exception):
+    """A recorded physical operation contradicts the carousel state.
+
+    The first physical mismatch is reported and no reconciliation is published;
+    previously published reconciliations remain readable.
+    """
+
+    def __init__(
+        self,
+        reconciliation_id: str,
+        mismatch: Mapping[str, Any],
+        attempt_id: int | None = None,
+    ):
+        self.reconciliation_id = reconciliation_id
+        self.mismatch = dict(mismatch)
+        self.attempt_id = attempt_id
+        super().__init__(
+            f"reconciliation {reconciliation_id!r} physical conflict: {self.mismatch!r}"
+        )
